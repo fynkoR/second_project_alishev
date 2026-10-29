@@ -1,12 +1,14 @@
 package pet.project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pet.project.entity.Book;
 import pet.project.entity.Person;
 import pet.project.exception.NotFoundBookException;
 import pet.project.repository.BookRepository;
+import pet.project.util.Validation;
 
 import java.util.List;
 
@@ -26,8 +28,13 @@ public class BookService {
         return bookRepository.findByPersonId(personId);
     }
 
-    public List<Book> findAll(){
-        return bookRepository.findAll();
+    public List<Book> findAll(Integer page, Integer books_per_page){
+        if(Validation.isNonNegative(page) && Validation.isPositive(books_per_page)){
+            return bookRepository.findAll(PageRequest.of(page, books_per_page)).getContent();
+        }
+        else{
+            return bookRepository.findAll();
+        }
     }
 
     public Book findById(int id){
