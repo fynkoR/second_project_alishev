@@ -1,33 +1,43 @@
 package pet.project.entity;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Entity
+@Table(name = "book")
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @NotEmpty
     @Size(min = 2, max = 100, message = "Name should be between 2 and 100 characters")
+    @Column(name = "name")
     private String name;
 
     @NotEmpty
     @Size(min = 2, max = 100, message = "Name author should be between 2 and 100 characters")
+    @Column(name = "author")
     private String author;
 
     @Min(value = 1900, message = "Year book should be from 1900")
+    @Column(name = "year")
     private int year;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
     public Book(){}
 
-    public Book(int id, String name, String author, int year, Person person){
-        this.id = id;
+    public Book(String name, String author, int year){
         this.name = name;
         this.author = author;
         this.year = year;
-        this.person = person;
     }
 
     public int getId() {
