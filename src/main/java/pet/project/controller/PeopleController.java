@@ -16,7 +16,6 @@ import pet.project.util.PersonValidator;
 public class PeopleController {
 
     private final PersonValidator personValidator;
-
     private final PeopleService peopleService;
     private final BookService bookService;
 
@@ -75,6 +74,7 @@ public class PeopleController {
         peopleService.update(id, person);
         return "redirect:/people";
     }
+
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id){
         peopleService.delete(id);

@@ -27,10 +27,12 @@ public class PeopleService {
     public Person findById(int id){
         return peopleRepository.findById(id).orElseThrow(() -> new NotFoundPersonException(id));
     }
+
     @Transactional
     public void save(Person person){
         peopleRepository.save(person);
     }
+
     @Transactional
     public void update(int id, Person updatePerson){
         Person person = findById(id);

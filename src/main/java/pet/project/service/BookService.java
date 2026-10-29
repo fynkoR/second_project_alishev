@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pet.project.entity.Book;
+import pet.project.entity.Person;
 import pet.project.exception.NotFoundBookException;
 import pet.project.repository.BookRepository;
 
@@ -52,10 +53,18 @@ public class BookService {
     public void delete(int id){
         bookRepository.deleteById(id);
     }
+
     @Transactional
-    public void setPerson(int id, int personId){
+    public void setPerson(int id, Integer personId){
         Book book = findById(id);
-        book.setPerson(peopleService.findById(personId));
+
+        if(personId == null){
+            book.setPerson(null);
+        }else{
+            Person person = peopleService.findById(personId);
+            book.setPerson(person);
+        }
+
         save(book);
     }
 }
