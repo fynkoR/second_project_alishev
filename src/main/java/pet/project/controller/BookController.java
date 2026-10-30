@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pet.project.entity.Book;
 import pet.project.entity.Person;
+import pet.project.exception.NotFoundBookException;
 import pet.project.service.BookService;
 import pet.project.service.PeopleService;
 
@@ -76,5 +77,15 @@ public class BookController {
                                   @RequestParam(value = "personId", required = false) Integer personId){
         bookService.setPerson(id, personId);
         return "redirect:/books";
+    }
+    @GetMapping("/search")
+    public String searchBook(Model model,
+                             @RequestParam(name = "name", required = false) String name){
+        try{
+            model.addAttribute("book", bookService.findByName(name));
+        }catch(NotFoundBookException e){
+            model.addAttribute("book", null);
+        }
+        return "books/search";
     }
 }

@@ -12,6 +12,7 @@ import pet.project.repository.BookRepository;
 import pet.project.util.Validation;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -78,5 +79,18 @@ public class BookService {
             book.setPerson(person);
         }
         save(book);
+    }
+
+    public Book findByName(String name){
+        Optional<Book> optionalBook = Optional.empty();
+        if(name != null && !name.isBlank()){
+            optionalBook = bookRepository.findByNameStartingWith(name);
+        }
+        if(optionalBook.isPresent()){
+            return optionalBook.get();
+        }
+        else{
+            throw new NotFoundBookException(name);
+        }
     }
 }
