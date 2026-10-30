@@ -7,4 +7,5 @@ public class Validation {
     public static boolean isPositive(Integer parameter) {
         return parameter != null && parameter > 0;
     }
+    public static boolean isSort(Boolean parameter){ return parameter != null && parameter; }
 }

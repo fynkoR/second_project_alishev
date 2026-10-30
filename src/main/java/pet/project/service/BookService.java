@@ -2,6 +2,7 @@ package pet.project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pet.project.entity.Book;
@@ -28,9 +29,12 @@ public class BookService {
         return bookRepository.findByPersonId(personId);
     }
 
-    public List<Book> findAll(Integer page, Integer books_per_page){
-        if(Validation.isNonNegative(page) && Validation.isPositive(books_per_page)){
-            return bookRepository.findAll(PageRequest.of(page, books_per_page)).getContent();
+    public List<Book> findAll(Integer page, Integer booksPerPage, Boolean sortByYear){
+        if(Validation.isNonNegative(page) && Validation.isPositive(booksPerPage) && Validation.isSort(sortByYear)){
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
+        }
+        else if(Validation.isSort(sortByYear)){
+            return bookRepository.findAll(Sort.by("year"));
         }
         else{
             return bookRepository.findAll();
@@ -45,6 +49,7 @@ public class BookService {
     public void save(Book book){
         bookRepository.save(book);
     }
+
     @Transactional
     public void update(int id, Book updatedBook){
         Book book = findById(id);
@@ -56,6 +61,7 @@ public class BookService {
 
         save(book);
     }
+
     @Transactional
     public void delete(int id){
         bookRepository.deleteById(id);
@@ -71,7 +77,6 @@ public class BookService {
             Person person = peopleService.findById(personId);
             book.setPerson(person);
         }
-
         save(book);
     }
 }
