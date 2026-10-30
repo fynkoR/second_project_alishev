@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "book")
@@ -27,6 +31,13 @@ public class Book {
     @Min(value = 1900, message = "Year book should be from 1900")
     @Column(name = "year")
     private int year;
+
+    @Column(name = "taken_at")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private LocalDate takenAt;
+
+    @Transient
+    private boolean overdue;
 
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
@@ -78,6 +89,22 @@ public class Book {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public LocalDate getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(LocalDate takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean isOverdue() {
+        return overdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        this.overdue = overdue;
     }
 
     @Override

@@ -11,6 +11,8 @@ import pet.project.exception.NotFoundBookException;
 import pet.project.repository.BookRepository;
 import pet.project.util.Validation;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +29,9 @@ public class BookService {
     }
 
     public List<Book> findByPersonId(int personId){
-        return bookRepository.findByPersonId(personId);
+        List<Book> books = bookRepository.findByPersonId(personId);
+        checkStatusOverdue(books);
+        return books;
     }
 
     public List<Book> findAll(Integer page, Integer booksPerPage, Boolean sortByYear){
@@ -74,9 +78,12 @@ public class BookService {
 
         if(personId == null){
             book.setPerson(null);
+            book.setOverdue(false);
         }else{
             Person person = peopleService.findById(personId);
             book.setPerson(person);
+            book.setTakenAt(LocalDate.now());
+            book.setOverdue(false);
         }
         save(book);
     }
@@ -91,6 +98,20 @@ public class BookService {
         }
         else{
             throw new NotFoundBookException(name);
+        }
+    }
+
+    private void checkStatusOverdue(List<Book> books){
+        LocalDate dateNow = LocalDate.now();
+
+        for(Book book : books){
+            LocalDate dateBook = book.getTakenAt();
+
+            long daysBetween = ChronoUnit.DAYS.between(dateBook, dateNow);
+
+            if(daysBetween > 10){
+                book.setOverdue(true);
+            }
         }
     }
 }
